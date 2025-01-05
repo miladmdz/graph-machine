@@ -1,3 +1,9 @@
+const input = document.querySelector("#input");
+const button = document.querySelector("#button");
+const showResultWrapper = document.querySelector(".validation__result");
+const showResultState = document.querySelector("#result");
+const state = document.querySelectorAll(".states__item");
+
 const testMachine = (input) => {
   const variable = ["q0", "q1", "q2", "q3"];
   const startState = "q0";
