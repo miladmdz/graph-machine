@@ -1,85 +1,58 @@
-/**
- * A class representing a Deterministic Finite Automaton (DFA) machine.
- */
+const testMachine = (input) => {
+  const variable = ["q0", "q1", "q2", "q3"];
+  const startState = "q0";
+  const finalState = "q2";
 
-class Machine {
-  #allVariable = {};
-  #finalState = "";
-  #currentState = "";
-  #productRules = {};
+  let currentState = startState;
 
-  /**
-   * Creates a new Machine instance.
-   * @param {string[]} variable - The list of all states in the DFA.
-   * @param {string} finalState - The accepting (final) state of the DFA.
-   * @param {string} startState - The starting state of the DFA.
-   * @param {Object<string, Object<string, string>>} productionRules - The transition rules of the DFA.
-   * Each state maps to an object where keys are input symbols and values are target states.
-   */
+  const productsRules = {
+    q0: { a: "q1", b: "q3" },
+    q1: { a: "q3", b: "q2" },
+    q2: { a: "q3", b: "q3" },
+    q3: { a: "q3", b: "q3" },
+  };
 
-  constructor(variable, finalState, startState, productionRules) {
-    for (const state of variable) {
-      this.#allVariable[state] = `${state}`;
+  for (const char of input) {
+    const targetState = productsRules[currentState][char];
+
+    if (targetState) {
+      currentState = targetState;
+    } else {
+      return false;
     }
-    this.startState = startState;
-    this.#currentState = this.startState;
-    this.#finalState = finalState;
-    this.#productRules = productionRules;
   }
-
-  /**
-   * Checks whether the given input string is accepted by the DFA.
-   * @param {string} input - The input string to check.
-   * @returns {void} Logs `true` if the input string is accepted, `false` otherwise.
-   */
-
-  checkLanguage(input) {
-    for (const char of input) {
-      const targetState = this.#productRules[this.#currentState][char];
-
-      if (targetState) {
-        this.#currentState = targetState;
-      } else {
-        return console.log("result of test language ====>", false);
-      }
-    }
-    return console.log(
-      "result of test language ====>",
-      this.#finalState.includes(this.#currentState)
-    );
-  }
-
-  /**
-   * Displays the DFA graph in the terminal.
-   * @returns {void} Logs the DFA graph representation.
-   **/
-
-  showGraph() {
-    console.log("----------------------------");
-    console.log("DFA Graph Representation:");
-    console.log("----------------------------");
-    for (const [state, transitions] of Object.entries(this.#productRules)) {
-      console.log(`State: ${state}`);
-      for (const [input, targetState] of Object.entries(transitions)) {
-        console.log(`  On '${input}' -> ${targetState}`);
-      }
-    }
-    console.log("----------------------------");
-    console.log(`Start State: ${this.startState}`);
-    console.log(`Final State(s): ${this.#finalState}`);
-    console.log("----------------------------");
-  }
-}
-
-const variable = ["q0", "q1", "q2", "q3"];
-const productsRules = {
-  q0: { a: "q1", b: "q3" },
-  q1: { a: "q3", b: "q2" },
-  q2: { a: "q3", b: "q3" },
-  q3: { a: "q3", b: "q3" },
+  return finalState.includes(currentState);
 };
 
-const test = new Machine(variable, "q2", "q0", productsRules);
+const testContentInMachin = (event) => {
+  event.preventDefault();
 
-test.checkLanguage("abb");
-test.showGraph();
+  const inputValue = input.value;
+  const result = testMachine(inputValue);
+
+  const successClass = "validation__result_success";
+  const errorClass = "validation__result_error";
+
+  if (result) {
+    showResultWrapper.classList.remove(errorClass);
+
+    showResultWrapper.classList.remove(successClass);
+    void showResultWrapper.offsetWidth;
+    showResultWrapper.classList.add(successClass);
+
+    showResultState.innerHTML = result;
+  } else {
+    showResultWrapper.classList.remove(successClass);
+
+    showResultWrapper.classList.remove(errorClass);
+    void showResultWrapper.offsetWidth;
+    showResultWrapper.classList.add(errorClass);
+
+    showResultState.innerHTML = result;
+  }
+};
+
+
+
+button.addEventListener("click", (event) => testContentInMachin(event));
+
